@@ -9,3 +9,5 @@ do
 	done
 done
 cd post-processing
+python3 plotPendulum.py
+python3 plotError.py
