@@ -2,42 +2,57 @@ package front;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Output {
 	public static String OUTPUT_DIR = "output";
 	
-	public static void outputToFile()
+	private static File createOscillatorFile(String outputFileName)
 	{
-		outputToFile("output.txt");
-	}
-	
-    public static void outputToFile(String outputFileName)
-    {
     	File file = new File(outputFileName);
 		try
 		{
-			if(file.createNewFile())
-			{
-				FileWriter writer = new FileWriter(outputFileName, true);
-				writer.write("Hola\n");
-				writer.close();
-			}
+			if(!file.createNewFile())
+				file.delete();
+			FileWriter writer = new FileWriter(outputFileName, true);
+			writer.write("t;x\n");
+			writer.close();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
-			return;
+			return null;
 		}
-        try (FileWriter writer = new FileWriter(outputFileName, true))
+		return file;
+	}
+	
+	public static void outputOscillatorToFile(String algorithm, double deltaT, Map<Double, Double> map)
+	{
+		String outputFileName = OUTPUT_DIR +"/output" +algorithm +(int)Math.log10(deltaT) +".txt";
+    	File file = createOscillatorFile(outputFileName);
+    	List<Entry<Double, Double>> entries = new ArrayList<Map.Entry<Double, Double>>(map.entrySet());
+    	Collections.sort(entries, new Comparator<Map.Entry<Double, Double>>()
+		    	{
+    		        public int compare(Entry<Double, Double> a, Entry<Double, Double> b)
+    		        {	return Double.compare(a.getKey(), b.getKey());	}
+		    	});
+    	
+        try (FileWriter writer = new FileWriter(file, true))
         {
-			writer.write("forEach\n");
+        	for(Entry<Double, Double> e : entries)
+    			writer.write(e.getKey() +";" +e.getValue() +"\n");
         	writer.close();
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
-    }
+	}
     
     public static void resetFolder(String folderName)
     {
