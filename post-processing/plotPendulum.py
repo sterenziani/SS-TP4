@@ -24,7 +24,7 @@ def main():
 	plt.plot(dfO['t'], dfO['x'], color='grey', label="Solución Analitica", linestyle = "dotted")
 	plt.ylim(top=1, bottom=-1)
 	plt.xlabel('Tiempo (s)')
-	plt.ylabel('Posición del pendulo (m)')
+	plt.ylabel('Posición del péndulo (m)')
 	plt.legend()
 	plt.show()
 
