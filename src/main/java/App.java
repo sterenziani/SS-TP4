@@ -35,7 +35,10 @@ public class App {
 			switch(input.getAlgorithm())
 			{
 				case "B":
-					simulator = new SimulatorBeeman(ball, input.getDeltaT(), k, gamma);
+					simulator = new SimulatorBeeman(ball, input.getDeltaT(), k, gamma, false);
+					break;
+				case "BPC":
+					simulator = new SimulatorBeeman(ball, input.getDeltaT(), k, gamma, true);
 					break;
 				case "V":
 					simulator = new SimulatorVerlet(ball, input.getDeltaT(), k, gamma);

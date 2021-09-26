@@ -13,6 +13,7 @@ def geterror(aprox, exact):
 def main():
 	errorV = []
 	errorB = []
+	errorBPC = []
 	errorG = []
 	errorS = []
 	directory = "../output/"
@@ -20,25 +21,28 @@ def main():
 		print("Picking up " +directory+"output-" +str(i) +".txt")
 		rV = pd.read_csv(directory+"outputV-" +str(i) +".txt", sep=';')
 		rB = pd.read_csv(directory+"outputB-" +str(i) +".txt", sep=';')
+		rBPC = pd.read_csv(directory+"outputBPC-" +str(i) +".txt", sep=';')
 		rG = pd.read_csv(directory+"outputG-" +str(i) +".txt", sep=';')
 		rO = pd.read_csv(directory+"outputO-" +str(i) +".txt", sep=';')
-		#rS = pd.read_csv(directory+"outputS-" +str(i) +".txt", sep=';')
+		rS = pd.read_csv(directory+"outputS-" +str(i) +".txt", sep=';')
 		errorV.append(geterror(rV['x'], rO['x']))
 		errorB.append(geterror(rB['x'], rO['x']))
+		errorBPC.append(geterror(rBPC['x'], rO['x']))
 		errorG.append(geterror(rG['x'], rO['x']))
-		#errorS.append(geterror(rS['x'], rO['x']))
+		errorS.append(geterror(rS['x'], rO['x']))
 
 	# Reverse order, from smallest to largest deltaT
 	errorV = errorV[::-1]
 	errorB = errorB[::-1]
+	errorBPC = errorBPC[::-1]
 	errorG = errorG[::-1]
-	#errorS = errorS[::-1]
+	errorS = errorS[::-1]
 
 	deltas = [10**-6, 10**-5, 10**-4, 10**-3, 10**-2, 10**-1]
-	plt.plot(deltas, errorB, marker = "o", color='orange', label="Beeman")
 	plt.plot(deltas, errorV, marker = "o", color='green', label="Verlet Original")
+	plt.plot(deltas, errorB, marker = "o", color='orange', label="Beeman")
+	plt.plot(deltas, errorBPC, marker = "o", color='yellow', label="Beeman Predictor-Corrector")
 	plt.plot(deltas, errorG, marker = "o", color='blue', label="Gear Predictor-Corrector")
-	#plt.plot(deltas, errorS, marker = "o", color='yellow', label="SOFIA")
 
 	plt.xlabel(r'$\Delta t$ $(s)$')
 	plt.ylabel(r'$ E(\Delta t)$  $(m^2)$')
