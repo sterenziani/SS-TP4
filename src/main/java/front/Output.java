@@ -1,4 +1,5 @@
 package front;
+import back.SpaceReport;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,6 +22,25 @@ public class Output {
 				file.delete();
 			FileWriter writer = new FileWriter(outputFileName, true);
 			writer.write("t;x\n");
+			writer.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+		return file;
+	}
+	
+	private static File createSpaceshipFile(String outputFileName)
+	{
+    	File file = new File(outputFileName);
+		try
+		{
+			if(!file.createNewFile())
+				file.delete();
+			FileWriter writer = new FileWriter(outputFileName, true);
+			writer.write("departureTime;shipVelocity;minDistance;minTime\n");
 			writer.close();
 		}
 		catch (IOException e)
@@ -66,5 +86,21 @@ public class Output {
         folder.delete();
         folder.mkdir();        
     }
+
+	public static void outputShipReports(List<SpaceReport> reports)
+	{
+		String outputFileName = OUTPUT_DIR +"/spaceships.txt";
+    	File file = createSpaceshipFile(outputFileName);
+        try (FileWriter writer = new FileWriter(file, true))
+        {
+        	for(SpaceReport r : reports)
+    			writer.write(r.getDepartureTime() +";" +r.getShipVelocity() +";" +r.getMinDistance() +";" +r.getTime() +"\n");
+        	writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+	}
     
 }

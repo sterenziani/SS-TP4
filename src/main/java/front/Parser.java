@@ -12,7 +12,15 @@ public class Parser {
         Scanner scanner = new Scanner(file);
         int exercise = scanner.nextInt();
         double deltaT = scanner.nextDouble();		// 10^-6 = 0.000001
-        String algorithm = scanner.next();
-		return new Input(exercise, deltaT, algorithm);  
+        if(exercise == 1)
+        {
+            String algorithm = scanner.next();
+    		return new Input(exercise, deltaT, algorithm);
+        }
+        else
+        {
+        	double shipVelocity = scanner.nextDouble();
+        	return new Input(exercise, deltaT, shipVelocity);
+        }
     }
 }

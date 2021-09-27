@@ -83,5 +83,10 @@ public class Particle {
 
     public void setVy(double vy){
         this.vy = vy;
-    }    
+    }
+    
+    public String toString()
+    {
+    	return "x: " +x +"\ty:" +y +"\tvx: " +vx +"\tvy: " +vy +"\tr: " +radius +"\tm:" +mass;
+    }
 }
