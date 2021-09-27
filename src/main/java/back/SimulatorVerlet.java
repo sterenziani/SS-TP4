@@ -38,12 +38,10 @@ public class SimulatorVerlet implements Simulator {
 		return (getNextPosition() - prev_r) / (2*deltaT);
 	}
 	
-	// TODO: Preguntar si es así
 	private double getPrevPositionEuler() {
 		return p.getX() - getPrevVelocityEuler()*deltaT + 0.5*a*Math.pow(-deltaT, 2);
 	}
 	
-	// TODO: Preguntar si es así
 	private double getPrevVelocityEuler() {
 		return p.getVx() - a*deltaT;
 	}

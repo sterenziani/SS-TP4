@@ -17,7 +17,7 @@ def main():
 	errorG = []
 	errorS = []
 	directory = "../output/"
-	for i in range(1,7):
+	for i in range(2,7):
 		print("Picking up " +directory+"output-" +str(i) +".txt")
 		rV = pd.read_csv(directory+"outputV-" +str(i) +".txt", sep=';')
 		rB = pd.read_csv(directory+"outputB-" +str(i) +".txt", sep=';')
@@ -38,7 +38,7 @@ def main():
 	errorG = errorG[::-1]
 	errorS = errorS[::-1]
 
-	deltas = [10**-6, 10**-5, 10**-4, 10**-3, 10**-2, 10**-1]
+	deltas = [10**-6, 10**-5, 10**-4, 10**-3, 10**-2]
 	plt.plot(deltas, errorV, marker = "o", color='green', label="Verlet Original")
 	plt.plot(deltas, errorB, marker = "o", color='orange', label="Beeman")
 	plt.plot(deltas, errorBPC, marker = "o", color='yellow', label="Beeman Predictor-Corrector")
