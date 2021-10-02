@@ -41,15 +41,15 @@ public class SpaceGearAlgorithm
         }
         else
         {
-            double [][][] old_values = oldGearSystem.getR();
+            double [][][] old_r = oldGearSystem.getR();
             for(Particle p : particles)
             {
                 int index = p.getId() - 1;
                 if(index != particles.size()-1)
                 {
                     for(int i = 0; i < 6; i++){
-                        r[index][X][i] = old_values[index][X][i];
-                        r[index][Y][i] = old_values[index][Y][i];
+                        r[index][X][i] = old_r[index][X][i];
+                        r[index][Y][i] = old_r[index][Y][i];
                     }
                 }
                 else
@@ -109,7 +109,7 @@ public class SpaceGearAlgorithm
         		
         		// Step 2: Evaluate
                 double nextA;
-                nextA = getAcceleration(nextRp, particleIndex, axis);
+                nextA = getAcceleration(r, particleIndex, axis);
                 double nextAp = nextRp[particleIndex][axis][2];
                 double deltaR2 = (nextA - nextAp) * Math.pow(deltaT, 2) * 0.5;
                 

@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 public class Output {
 	public static String OUTPUT_DIR = "output";
 	
-	private static File createOscillatorFile(String outputFileName)
+	private static File createFile(String outputFileName, String header)
 	{
     	File file = new File(outputFileName);
 		try
@@ -21,7 +21,7 @@ public class Output {
 			if(!file.createNewFile())
 				file.delete();
 			FileWriter writer = new FileWriter(outputFileName, true);
-			writer.write("t;x\n");
+			writer.write(header+"\n");
 			writer.close();
 		}
 		catch (IOException e)
@@ -54,7 +54,7 @@ public class Output {
 	public static void outputOscillatorToFile(String algorithm, double deltaT, Map<Double, Double> map)
 	{
 		String outputFileName = OUTPUT_DIR +"/output" +algorithm +(int)Math.log10(deltaT) +".txt";
-    	File file = createOscillatorFile(outputFileName);
+    	File file = createFile(outputFileName, "t;x");
     	List<Entry<Double, Double>> entries = new ArrayList<Map.Entry<Double, Double>>(map.entrySet());
     	Collections.sort(entries, new Comparator<Map.Entry<Double, Double>>()
 		    	{
@@ -101,6 +101,45 @@ public class Output {
         {
             e.printStackTrace();
         }
+	}
+	
+	public static void outputShipPreciseReports(List<SpaceReport> reports)
+	{
+		String outputFileName = OUTPUT_DIR +"/spaceships-precise.txt";
+    	File file = createSpaceshipFile(outputFileName);
+        try (FileWriter writer = new FileWriter(file, true))
+        {
+        	for(SpaceReport r : reports)
+    			writer.write(r.getDepartureTime() +";" +r.getShipVelocity() +";" +r.getMinDistance() +";" +r.getTime() +"\n");
+        	writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+	}
+	
+	public static void outputShipVelocity(Map<Double, Double> map)
+	{
+		String outputFileName = OUTPUT_DIR +"/spaceship-velocity.txt";
+		File file = createFile(outputFileName, "t;v");
+		List<Entry<Double, Double>> entries = new ArrayList<Map.Entry<Double, Double>>(map.entrySet());
+		Collections.sort(entries, new Comparator<Map.Entry<Double, Double>>()
+		    	{
+			        public int compare(Entry<Double, Double> a, Entry<Double, Double> b)
+			        {	return Double.compare(a.getKey(), b.getKey());	}
+		    	});
+		
+	    try (FileWriter writer = new FileWriter(file, true))
+	    {
+	    	for(Entry<Double, Double> e : entries)
+				writer.write(e.getKey() +";" +e.getValue() +"\n");
+	    	writer.close();
+	    }
+	    catch (IOException e)
+	    {
+	        e.printStackTrace();
+	    }
 	}
     
 }

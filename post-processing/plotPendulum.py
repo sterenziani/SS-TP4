@@ -1,17 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-def toarray(file):
-	f = open(file, "r")
-	lines = f.readlines()
-	pos = []
-	times = []
-	for l in lines:
-		array = l.split()
-		pos.append(float(array[1]))
-		times.append(float(array[0]))
-	return times, pos
-
 def main():
 	directory = "../output/"
 	dfV = pd.read_csv(directory+"outputV-4.txt", sep=';')

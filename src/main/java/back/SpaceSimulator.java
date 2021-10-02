@@ -33,6 +33,7 @@ public class SpaceSimulator
 
 		double x = earth.getX() + enx*(spaceStationHeight + earth.getRadius());
 		double y = earth.getY() + eny*(spaceStationHeight + earth.getRadius());
+		// TODO: Revisar si el signo depende del de VX y VY
 		double vx = earth.getVx() - eny*(orbitalVelocity + shipVelocity);
 		double vy = earth.getVy() + enx*(orbitalVelocity + shipVelocity);
 
