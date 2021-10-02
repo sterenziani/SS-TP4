@@ -147,10 +147,11 @@ public class App {
 		t = 0.0;
 		launched = false;
 		crashed = false;
-		double newDeltaT = 60*5;
-		simulator = new SpaceSimulator(particles, newDeltaT);
+		double launchInterval = 60*5;
+		simulator = new SpaceSimulator(particles, input.getDeltaT());
 		minGlobalDistance = Double.MAX_VALUE;
-		for(double departureTime = bestLaunchTime-SECONDS_IN_DAY; departureTime < bestLaunchTime+SECONDS_IN_DAY; departureTime += newDeltaT)
+		//bestLaunchTime = 705*SECONDS_IN_DAY; // Uncomment for 1b debug
+		for(double departureTime = bestLaunchTime-SECONDS_IN_DAY; departureTime < bestLaunchTime+SECONDS_IN_DAY; departureTime += launchInterval)
 		{
 			particles = createPlanets();
 			t = 0.0;
@@ -193,14 +194,13 @@ public class App {
 		Output.outputShipPreciseReports(reports);
 		
 		// Analyze velocity
+		//bestLaunchTime = 6.08859E7; // Uncomment for 1c debug
 		particles = createPlanets();
 		t = 0.0;
 		launched = false;
 		crashed = false;
-		newDeltaT = 60;
-		Map<Double, Double> map = new HashMap<>();
-		bestLaunchTime = 74 * SECONDS_IN_DAY;
-		simulator = new SpaceSimulator(particles, newDeltaT);
+		Map<Double, Double> velocityMap = new HashMap<>();
+		simulator = new SpaceSimulator(particles, input.getDeltaT());
 		while(!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR/2)
 		{
 			if(t >= bestLaunchTime && !launched)
@@ -210,13 +210,15 @@ public class App {
 			}
 			simulator.updateParticles();
 			if(launched)
-				map.put(t, simulator.getShipVelocity());
+				velocityMap.put(t, simulator.getShipVelocity());
 			if(launched && simulator.getShipToMarsDistance() <= 0)
+			{
 				crashed = true;
-			t += newDeltaT;
+				System.out.println("Crashed with speed of " +simulator.getShipVelocity());
+			}
+			t += input.getDeltaT();
 		}
-		System.out.println("Map size is " +map.size());
-		Output.outputShipVelocity(map);
+		Output.outputShipVelocity(velocityMap);
 	}
 	
 	private static List<Particle> createPlanets()
