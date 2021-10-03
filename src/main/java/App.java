@@ -224,8 +224,8 @@ public class App {
 	private static List<Particle> createPlanets()
 	{
 		Particle sun = new Particle(1, 0, 0, 0, 0, 1988500*Math.pow(10, 24), 696000);
-		Particle earth = new Particle(2, 1.501206577633135E+08, -2.745908419719997E+05, -4.256971057184570E-0, 2.966576927417303E+01, 5.97219*Math.pow(10, 24), 6371.01);
-		Particle mars = new Particle(3, -2.430368627109727E+08, -3.389498425155429E+07, 4.247475113528548E+00, -2.192748577413463E+01, 6.4171*Math.pow(10, 23), 3389.92);
+		Particle earth = new Particle(2, 1.500619962348151E+08, 2.288499248197072E+06, -9.322979134387409E-01, 2.966365033636722E+01, 5.97219*Math.pow(10, 24), 6371.01);
+		Particle mars = new Particle(3, -2.426617401833969E+08, -3.578836154354768E+07, 4.435907910045917E+00, -2.190044178514185E+01, 6.4171*Math.pow(10, 23), 3389.92);
 		
 		// Old data
 		sun = new Particle(1, 0, 0, 0, 0, 1.989e+30, 696340);
