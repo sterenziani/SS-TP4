@@ -24,7 +24,6 @@ public class App {
 	public static void main(String[] args) throws IOException
 	{
 		Input input = Parser.ParseInputFile("input.txt");
-		//Output.resetFolder(Output.OUTPUT_DIR);
 		if(input.getExercise() == 1)
 			Exercise1(input);
 		else if(input.getExercise() == 2)
@@ -95,7 +94,6 @@ public class App {
 		List<Particle> particles = createPlanets();
 		SpaceSimulator simulator;
 		List<SpaceReport> reports = new ArrayList<>();
-		
 		for(int i=0; i < DAYS_IN_2_YEARS; i++)
 		{
 			System.out.println("Day " +i +"\tStarting new launch!");
@@ -199,8 +197,12 @@ public class App {
 		crashed = false;
 		Map<Double, Double> velocityMap = new HashMap<>();
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
+		int frame = 0;
+		Output.resetFolder(Output.OUTPUT_DIR+"/animation");
 		while(!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR/2)
 		{
+			if(frame % 1000 == 0)
+				Output.outputAnimationData(frame, simulator);
 			if(t >= bestLaunchTime && !launched)
 			{
 				simulator.launchSpaceship(input.getShipVelocity());
@@ -215,7 +217,9 @@ public class App {
 				System.out.println("Crashed with speed of " +simulator.getShipVelocity());
 			}
 			t += input.getDeltaT();
+			frame++;
 		}
+		Output.outputAnimationData(frame, simulator);
 		Output.outputShipVelocity(velocityMap);
 	}
 	

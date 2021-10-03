@@ -1,5 +1,7 @@
 package front;
+import back.Particle;
 import back.SpaceReport;
+import back.SpaceSimulator;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -157,6 +159,29 @@ public class Output {
 	    {
 	    	for(Entry<Double, Double> e : entries)
 				writer.write(e.getKey() +";" +e.getValue() +"\n");
+	    	writer.close();
+	    }
+	    catch (IOException e)
+	    {
+	        e.printStackTrace();
+	    }
+	}
+	
+	public static void outputAnimationData(int frame, SpaceSimulator simulator)
+	{
+		File file = createFile(OUTPUT_DIR +"/animation/anim" +frame +".xyz", simulator.getParticles().size()+"\n");
+		double[] r = {255, 25, 200, 255};
+		double[] g = {200, 100, 25, 255};
+		double[] b = {25, 255, 25, 255};
+		double[] multipliers = {50, 1500, 1500, 20005000};
+	    try (FileWriter writer = new FileWriter(file, true))
+	    {
+	    	for(Particle p : simulator.getParticles())
+	    	{
+	    		int index = p.getId()-1;
+				writer.write(p.getX()+"\t"+p.getY()+"\t"+p.getRadius()*multipliers[index]+"\t"
+							+r[index]/255+"\t"+g[index]/255+"\t"+b[index]/255+"\n");
+	    	}
 	    	writer.close();
 	    }
 	    catch (IOException e)

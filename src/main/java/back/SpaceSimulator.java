@@ -55,4 +55,8 @@ public class SpaceSimulator
 		Particle ship = particles.get(3);
 		return ship.getV();
 	}
+	
+	public List<Particle> getParticles() {
+		return particles;
+	}
 }
