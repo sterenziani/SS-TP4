@@ -106,10 +106,16 @@ public class SpaceGearAlgorithm
         		// Step 1: Predict
         		for(int i=0; i < 6; i++)
         			nextRp[particleIndex][axis][i] = predict(particleIndex, axis, i);
-        		
+            }
+		}
+		for(Particle p : particles)
+		{
+            int particleIndex = p.getId() - 1;
+            for(int axis=X; axis <= Y; axis++)
+            {        		
         		// Step 2: Evaluate
                 double nextA;
-                nextA = getAcceleration(r, particleIndex, axis);
+                nextA = getAcceleration(nextRp, particleIndex, axis);
                 double nextAp = nextRp[particleIndex][axis][2];
                 double deltaR2 = (nextA - nextAp) * Math.pow(deltaT, 2) * 0.5;
                 
