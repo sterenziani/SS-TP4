@@ -76,7 +76,6 @@ public class SpaceGearAlgorithm
     
     private double getAcceleration(double[][][] r, int targetIndex, int axis)
     {
-    	// Diapositivas 40 y 44
         double a = 0;
         for (Particle p : particles)
         {

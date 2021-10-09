@@ -89,9 +89,11 @@ public class Output {
         folder.mkdir();        
     }
 
-	public static void outputShipReports(List<SpaceReport> reports)
+	public static void outputShipReports(List<SpaceReport> reports, boolean fromMars)
 	{
 		String outputFileName = OUTPUT_DIR +"/spaceships.txt";
+		if(fromMars)
+			outputFileName = OUTPUT_DIR +"/spaceships-return.txt";
     	File file = createSpaceshipFile(outputFileName);
         try (FileWriter writer = new FileWriter(file, true))
         {
@@ -105,9 +107,11 @@ public class Output {
         }
 	}
 	
-	public static void outputShipPreciseReports(List<SpaceReport> reports)
+	public static void outputShipPreciseReports(List<SpaceReport> reports, boolean fromMars)
 	{
 		String outputFileName = OUTPUT_DIR +"/spaceships-precise.txt";
+		if(fromMars)
+			outputFileName = OUTPUT_DIR +"/spaceships-return-precise.txt";
     	File file = createSpaceshipFile(outputFileName);
         try (FileWriter writer = new FileWriter(file, true))
         {
@@ -121,9 +125,11 @@ public class Output {
         }
 	}
 	
-	public static void outputShipVelocity(Map<Double, Double> map)
+	public static void outputShipVelocity(Map<Double, Double> map, boolean fromMars)
 	{
 		String outputFileName = OUTPUT_DIR +"/spaceship-velocity.txt";
+		if(fromMars)
+			outputFileName = OUTPUT_DIR +"/spaceship-return-velocity.txt";
 		File file = createFile(outputFileName, "t;v");
 		List<Entry<Double, Double>> entries = new ArrayList<Map.Entry<Double, Double>>(map.entrySet());
 		Collections.sort(entries, new Comparator<Map.Entry<Double, Double>>()
@@ -167,13 +173,17 @@ public class Output {
 	    }
 	}
 	
-	public static void outputAnimationData(int frame, SpaceSimulator simulator)
+	public static void outputAnimationData(int frame, SpaceSimulator simulator, boolean fromMars)
 	{
-		File file = createFile(OUTPUT_DIR +"/animation/anim" +frame +".xyz", simulator.getParticles().size()+"\n");
-		double[] r = {255, 25, 200, 255};
-		double[] g = {200, 100, 25, 255};
-		double[] b = {25, 255, 25, 255};
-		double[] multipliers = {50, 1500, 1500, 20005000};
+		File file;
+		if(fromMars)
+			file = createFile(OUTPUT_DIR +"/animation-return/anim" +frame +".xyz", simulator.getParticles().size()+"\n");
+		else
+			file = createFile(OUTPUT_DIR +"/animation/anim" +frame +".xyz", simulator.getParticles().size()+"\n");
+		double[] r = {255, 25, 200, 155, 255};
+		double[] g = {200, 100, 25, 103, 255};
+		double[] b = {25, 255, 25, 60, 255};
+		double[] multipliers = {50, 1500, 1500, 1500, 20005000};
 	    try (FileWriter writer = new FileWriter(file, true))
 	    {
 	    	for(Particle p : simulator.getParticles())

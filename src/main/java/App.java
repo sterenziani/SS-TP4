@@ -19,7 +19,8 @@ public class App {
 	
 	private static final double SECONDS_IN_DAY = 24*3600;
 	private static final double SECONDS_IN_YEAR = 365*SECONDS_IN_DAY;
-	private static final double DAYS_IN_2_YEARS = 730;
+	private static final int DAYS_IN_2_YEARS = 730;
+	private static final int MINUTES_MARGIN = 5;
 	
 	public static void main(String[] args) throws IOException
 	{
@@ -27,7 +28,9 @@ public class App {
 		if(input.getExercise() == 1)
 			Exercise1(input);
 		else if(input.getExercise() == 2)
-			Exercise2(input);
+			Exercise2(input, false);
+		else if(input.getExercise() == 3)
+			Exercise2(input, true);
 		else
 			System.out.println("There is no exercise #" +input.getExercise());
 	}
@@ -81,7 +84,7 @@ public class App {
 		System.out.println("Simulation complete!");
 	}
 	
-	private static void Exercise2(Input input)
+	private static void Exercise2(Input input, boolean toVenus)
 	{
 		boolean launched = false;
 		boolean crashed = false;
@@ -96,8 +99,8 @@ public class App {
 		List<SpaceReport> reports = new ArrayList<>();
 		for(int i=0; i < DAYS_IN_2_YEARS; i++)
 		{
-			System.out.println("Day " +i +"\tStarting new launch!");
 			double departureTime = i*SECONDS_IN_DAY;
+			System.out.println("Day " +i +" (departureTime = " +departureTime +")\tStarting new launch!");
 			particles = createPlanets();
 			t = 0.0;
 			minDistance = Integer.MAX_VALUE;
@@ -110,19 +113,211 @@ public class App {
 			{
 				if(t >= departureTime && !launched)
 				{
-					simulator.launchSpaceship(input.getShipVelocity());
+					simulator.launchSpaceship(input.getShipVelocity(), toVenus);
 					launched = true;
 				}
 				simulator.updateParticles();
 				
 				if (launched)
 				{
-					if (minDistance >= simulator.getShipToMarsDistance())
+					if(toVenus)
 					{
-						minDistance = simulator.getShipToMarsDistance();
+						if (minDistance >= simulator.getShipToVenusDistance())
+						{
+							minDistance = simulator.getShipToVenusDistance();
+							minTime = t - departureTime;
+						}
+						if (simulator.getShipToVenusDistance() <= 0)
+							crashed = true;
+					}
+					else
+					{
+						if (minDistance >= simulator.getShipToMarsDistance())
+						{
+							minDistance = simulator.getShipToMarsDistance();
+							minTime = t - departureTime;
+						}
+						if (simulator.getShipToMarsDistance() <= 0)
+							crashed = true;
+					}
+				}
+				t += input.getDeltaT();
+			}
+			SpaceReport report = new SpaceReport(departureTime, simulator.getShipVelocity(), minDistance, minTime);
+			reports.add(report);
+			if(report.getMinDistance() < minGlobalDistance)
+			{
+				minGlobalDistance = report.getMinDistance();
+				bestLaunchTime = report.getDepartureTime();
+			}
+			System.out.println(report.getDepartureTime() +"\t" + report.getShipVelocity() +"\t" +report.getMinDistance() +"\t" +report.getTime());
+		}
+		System.out.println("Mission complete! Best day was " +bestLaunchTime/SECONDS_IN_DAY +"\n\n");
+		Output.outputShipReports(reports, false);
+		
+		// Analyze best launch date (Find best time in time frame around that launch)
+		reports.clear();
+		particles = createPlanets();
+		t = 0.0;
+		launched = false;
+		crashed = false;
+		double launchInterval = 60*MINUTES_MARGIN;
+		double launchDay = bestLaunchTime;
+		simulator = new SpaceSimulator(particles, input.getDeltaT());
+		minGlobalDistance = Double.MAX_VALUE;
+		for(double departureTime = launchDay-SECONDS_IN_DAY; departureTime <= launchDay+SECONDS_IN_DAY; departureTime += launchInterval)
+		{
+			particles = createPlanets();
+			t = 0.0;
+			minDistance = Integer.MAX_VALUE;
+			minTime = Integer.MAX_VALUE;
+			launched = false;
+			crashed = false;
+			simulator = new SpaceSimulator(particles, input.getDeltaT());
+			
+			while(!crashed && t <= departureTime + SECONDS_IN_YEAR/2)
+			{
+				if(t >= departureTime && !launched)
+				{
+					simulator.launchSpaceship(input.getShipVelocity(), toVenus);
+					launched = true;
+				}
+				simulator.updateParticles();
+				if (launched)
+				{
+					if(toVenus)
+					{
+						if (minDistance >= simulator.getShipToVenusDistance())
+						{
+							minDistance = simulator.getShipToVenusDistance();
+							minTime = t - departureTime;
+						}
+						if (simulator.getShipToVenusDistance() <= 0)
+							crashed = true;
+					}
+					else
+					{
+						if (minDistance >= simulator.getShipToMarsDistance())
+						{
+							minDistance = simulator.getShipToMarsDistance();
+							minTime = t - departureTime;
+						}
+						if (simulator.getShipToMarsDistance() <= 0)
+							crashed = true;
+					}
+				}
+				t += input.getDeltaT();
+			}
+			SpaceReport report = new SpaceReport(departureTime, simulator.getShipVelocity(), minDistance, minTime);
+			reports.add(report);
+			if(report.getMinDistance() < minGlobalDistance)
+			{
+				minGlobalDistance = report.getMinDistance();
+				bestLaunchTime = report.getDepartureTime();
+			}
+			System.out.println(departureTime +"\t" + simulator.getShipVelocity() +"\t" +minDistance +"\t" +minTime);
+		}
+		System.out.println("Mission complete! Best time for launch is " +bestLaunchTime);
+		Output.outputShipPreciseReports(reports, false);
+		
+		// Analyze velocity
+		particles = createPlanets();
+		t = 0.0;
+		launched = false;
+		crashed = false;
+		Map<Double, Double> velocityMap = new HashMap<>();
+		simulator = new SpaceSimulator(particles, input.getDeltaT());
+		int frame = 0;
+		Output.resetFolder(Output.OUTPUT_DIR+"/animation");
+		while(!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR/2)
+		{
+			if(frame % 1000 == 0)
+				Output.outputAnimationData(frame, simulator, false);
+			if(t >= bestLaunchTime && !launched)
+			{
+				simulator.launchSpaceship(input.getShipVelocity(), toVenus);
+				launched = true;
+			}
+			simulator.updateParticles();
+			if(launched)
+				velocityMap.put(t, simulator.getShipVelocity());
+			if(toVenus)
+			{
+				if(launched && simulator.getShipToVenusDistance() <= 0)
+				{
+					crashed = true;
+					System.out.println("Crashed with speed of " +simulator.getShipVelocity());
+				}
+			}
+			else
+			{
+				if(launched && simulator.getShipToMarsDistance() <= 0)
+				{
+					crashed = true;
+					System.out.println("Crashed with speed of " +simulator.getShipVelocity());
+				}
+			}
+			t += input.getDeltaT();
+			frame++;
+		}
+		Output.outputAnimationData(frame, simulator, false);
+		Output.outputShipVelocity(velocityMap, false);
+		if(!toVenus && crashed)
+			MarsToEarth(input, bestLaunchTime, t-bestLaunchTime);
+	}
+	
+	private static void MarsToEarth(Input input, double originalLaunch, double travelTime)
+	{
+		System.out.println("\n\nMISSION TO EARTH\n");
+		boolean launched = false;
+		boolean crashed = false;
+		boolean died = false;
+		double t, minDistance, minTime;
+		double minGlobalDistance = Double.MAX_VALUE;
+		double minLaunchTime = originalLaunch + travelTime;
+		// Round up to next midnight
+		if((int)minLaunchTime % (int)SECONDS_IN_DAY != 0)
+			minLaunchTime = SECONDS_IN_DAY * (1 + (int)minLaunchTime/(int)SECONDS_IN_DAY);
+		List<Particle> particles = createPlanets();
+		SpaceSimulator simulator = new SpaceSimulator(particles, input.getDeltaT());
+		
+		// Repeat Exercise2 but from Mars
+		List<SpaceReport> reports = new ArrayList<>();
+		double bestLaunchTime = 0;
+		int firstLaunchDay = (int) (minLaunchTime/SECONDS_IN_DAY);
+		int finalLaunchDay = firstLaunchDay + DAYS_IN_2_YEARS;
+		for(int i = firstLaunchDay; i < finalLaunchDay; i++)
+		{
+			double departureTime = i*SECONDS_IN_DAY;
+			System.out.println("Day " +i +" (departureTime = " +departureTime +")\tStarting new launch!");
+			particles = createPlanets();
+			t = 0.0;
+			minDistance = Integer.MAX_VALUE;
+			minTime = Integer.MAX_VALUE;
+			launched = false;
+			crashed = false;
+			died = false;
+			simulator = new SpaceSimulator(particles, input.getDeltaT());
+			
+			while(!crashed && !died && t <= departureTime + SECONDS_IN_YEAR/2)
+			{
+				if(t >= departureTime && !launched)
+				{
+					simulator.launchSpaceshipFromMars(input.getShipVelocity());
+					launched = true;
+				}
+				simulator.updateParticles();
+				
+				if (launched)
+				{
+					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/3))
+						died = true;
+					if (minDistance >= simulator.getShipToEarthDistance())
+					{
+						minDistance = simulator.getShipToEarthDistance();
 						minTime = t - departureTime;
 					}
-					if (simulator.getShipToMarsDistance() <= 0)
+					if (simulator.getShipToEarthDistance() <= 0)
 						crashed = true;
 				}
 				t += input.getDeltaT();
@@ -137,7 +332,7 @@ public class App {
 			System.out.println(report.getDepartureTime() +"\t" + report.getShipVelocity() +"\t" +report.getMinDistance() +"\t" +report.getTime());
 		}
 		System.out.println("Mission complete! Best day was " +bestLaunchTime/SECONDS_IN_DAY +"\n\n");
-		Output.outputShipReports(reports);
+		Output.outputShipReports(reports, true);
 		
 		// Analyze best launch date (Find best time in time frame around that launch)
 		reports.clear();
@@ -145,10 +340,12 @@ public class App {
 		t = 0.0;
 		launched = false;
 		crashed = false;
-		double launchInterval = 60*5;
+		double launchInterval = 60*MINUTES_MARGIN;
+		double launchDay = bestLaunchTime;
+		System.out.println("Launch Day is " +launchDay);
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
 		minGlobalDistance = Double.MAX_VALUE;
-		for(double departureTime = bestLaunchTime-SECONDS_IN_DAY; departureTime < bestLaunchTime+SECONDS_IN_DAY; departureTime += launchInterval)
+		for(double departureTime = launchDay-SECONDS_IN_DAY; departureTime <= launchDay+SECONDS_IN_DAY; departureTime += launchInterval)
 		{
 			particles = createPlanets();
 			t = 0.0;
@@ -156,24 +353,27 @@ public class App {
 			minTime = Integer.MAX_VALUE;
 			launched = false;
 			crashed = false;
+			died = false;
 			simulator = new SpaceSimulator(particles, input.getDeltaT());
 			
-			while(!crashed && t <= departureTime + SECONDS_IN_YEAR/2)
+			while(!crashed && ! died && t <= departureTime + SECONDS_IN_YEAR/2)
 			{
 				if(t >= departureTime && !launched)
 				{
-					simulator.launchSpaceship(input.getShipVelocity());
+					simulator.launchSpaceshipFromMars(input.getShipVelocity());
 					launched = true;
 				}
 				simulator.updateParticles();
 				if (launched)
 				{
-					if (simulator.getShipToMarsDistance() <= minDistance)
+					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/3))
+						died = true;
+					if (minDistance >= simulator.getShipToEarthDistance())
 					{
-						minDistance = simulator.getShipToMarsDistance();
+						minDistance = simulator.getShipToEarthDistance();
 						minTime = t - departureTime;
 					}
-					if (simulator.getShipToMarsDistance() <= 0)
+					if (simulator.getShipToEarthDistance() <= 0)
 						crashed = true;
 				}
 				t += input.getDeltaT();
@@ -188,7 +388,7 @@ public class App {
 			System.out.println(departureTime +"\t" + simulator.getShipVelocity() +"\t" +minDistance +"\t" +minTime);
 		}
 		System.out.println("Mission complete! Best time for launch is " +bestLaunchTime);
-		Output.outputShipPreciseReports(reports);
+		Output.outputShipPreciseReports(reports, true);
 		
 		// Analyze velocity
 		particles = createPlanets();
@@ -198,20 +398,20 @@ public class App {
 		Map<Double, Double> velocityMap = new HashMap<>();
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
 		int frame = 0;
-		Output.resetFolder(Output.OUTPUT_DIR+"/animation");
+		Output.resetFolder(Output.OUTPUT_DIR+"/animation-return");
 		while(!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR/2)
 		{
 			if(frame % 1000 == 0)
-				Output.outputAnimationData(frame, simulator);
+				Output.outputAnimationData(frame, simulator, true);
 			if(t >= bestLaunchTime && !launched)
 			{
-				simulator.launchSpaceship(input.getShipVelocity());
+				simulator.launchSpaceshipFromMars(input.getShipVelocity());
 				launched = true;
 			}
 			simulator.updateParticles();
 			if(launched)
 				velocityMap.put(t, simulator.getShipVelocity());
-			if(launched && simulator.getShipToMarsDistance() <= 0)
+			if(launched && simulator.getShipToEarthDistance() <= 0)
 			{
 				crashed = true;
 				System.out.println("Crashed with speed of " +simulator.getShipVelocity());
@@ -219,8 +419,8 @@ public class App {
 			t += input.getDeltaT();
 			frame++;
 		}
-		Output.outputAnimationData(frame, simulator);
-		Output.outputShipVelocity(velocityMap);
+		Output.outputAnimationData(frame, simulator, true);
+		Output.outputShipVelocity(velocityMap, true);
 	}
 	
 	private static List<Particle> createPlanets()
@@ -228,17 +428,13 @@ public class App {
 		Particle sun = new Particle(1, 0, 0, 0, 0, 1988500*Math.pow(10, 24), 696000);
 		Particle earth = new Particle(2, 1.500619962348151E+08, 2.288499248197072E+06, -9.322979134387409E-01, 2.966365033636722E+01, 5.97219*Math.pow(10, 24), 6371.01);
 		Particle mars = new Particle(3, -2.426617401833969E+08, -3.578836154354768E+07, 4.435907910045917E+00, -2.190044178514185E+01, 6.4171*Math.pow(10, 23), 3389.92);
+		Particle venus = new Particle(4, 5.014551876053274E+07, -9.659685434359106E+07, 3.084680652374887E+01, 1.601542153811616E+01, 48.685*Math.pow(10, 23), 6051.84);
 		
-		// Old data
-		/*
-		sun = new Particle(1, 0, 0, 0, 0, 1.989e+30, 696340);
-		earth = new Particle(2, 1.493188929636662E+08, 1.318936357931255E+07, -3.113279917782445, 2.955205189256462E+01, 5.972e+24, 6371);
-		mars = new Particle(3, 2.059448551842169E+08, 4.023977946528339E+07, -3.717406842095575, 2.584914078301731E+01, 6.39e+23, 3389.5);
-		*/
 		List<Particle> particles = new ArrayList<>();
 		particles.add(sun);
 		particles.add(earth);
 		particles.add(mars);
+		particles.add(venus);
 		return particles;
 	}
 }
