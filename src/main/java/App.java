@@ -122,9 +122,9 @@ public class App {
 				{
 					if(toVenus)
 					{
-						if (minDistance >= simulator.getShipToVenusDistance())
+						if (minDistance > Math.max(0, simulator.getShipToVenusDistance()))
 						{
-							minDistance = simulator.getShipToVenusDistance();
+							minDistance = Math.max(0, simulator.getShipToVenusDistance());
 							minTime = t - departureTime;
 						}
 						if (simulator.getShipToVenusDistance() <= 0)
@@ -132,9 +132,9 @@ public class App {
 					}
 					else
 					{
-						if (minDistance >= simulator.getShipToMarsDistance())
+						if (minDistance > Math.max(0, simulator.getShipToMarsDistance()))
 						{
-							minDistance = simulator.getShipToMarsDistance();
+							minDistance = Math.max(0, simulator.getShipToMarsDistance());
 							minTime = t - departureTime;
 						}
 						if (simulator.getShipToMarsDistance() <= 0)
@@ -187,9 +187,9 @@ public class App {
 				{
 					if(toVenus)
 					{
-						if (minDistance >= simulator.getShipToVenusDistance())
+						if (minDistance > Math.max(0, simulator.getShipToVenusDistance()))
 						{
-							minDistance = simulator.getShipToVenusDistance();
+							minDistance = Math.max(0, simulator.getShipToVenusDistance());
 							minTime = t - departureTime;
 						}
 						if (simulator.getShipToVenusDistance() <= 0)
@@ -197,9 +197,9 @@ public class App {
 					}
 					else
 					{
-						if (minDistance >= simulator.getShipToMarsDistance())
+						if (minDistance > Math.max(0, simulator.getShipToMarsDistance()))
 						{
-							minDistance = simulator.getShipToMarsDistance();
+							minDistance = Math.max(0, simulator.getShipToMarsDistance());
 							minTime = t - departureTime;
 						}
 						if (simulator.getShipToMarsDistance() <= 0)
@@ -312,9 +312,9 @@ public class App {
 				{
 					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/3))
 						died = true;
-					if (minDistance >= simulator.getShipToEarthDistance())
+					if (minDistance > Math.max(0, simulator.getShipToEarthDistance()))
 					{
-						minDistance = simulator.getShipToEarthDistance();
+						minDistance = Math.max(0, simulator.getShipToEarthDistance());
 						minTime = t - departureTime;
 					}
 					if (simulator.getShipToEarthDistance() <= 0)
@@ -356,7 +356,7 @@ public class App {
 			died = false;
 			simulator = new SpaceSimulator(particles, input.getDeltaT());
 			
-			while(!crashed && ! died && t <= departureTime + SECONDS_IN_YEAR/2)
+			while(!crashed && !died && t <= departureTime + SECONDS_IN_YEAR/2)
 			{
 				if(t >= departureTime && !launched)
 				{
@@ -368,9 +368,9 @@ public class App {
 				{
 					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/3))
 						died = true;
-					if (minDistance >= simulator.getShipToEarthDistance())
+					if (minDistance > Math.max(0, simulator.getShipToEarthDistance()))
 					{
-						minDistance = simulator.getShipToEarthDistance();
+						minDistance = Math.max(0, simulator.getShipToEarthDistance());
 						minTime = t - departureTime;
 					}
 					if (simulator.getShipToEarthDistance() <= 0)
