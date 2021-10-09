@@ -18,7 +18,6 @@ def main():
     plt.plot((df['departureTime'] - minTimeStart)/3600, df['minDistance'], '.')
     plt.xlabel('Hora de despegue (hrs)')
     plt.ylabel('Distancia mínima a Marte (km)')
-    plt.axhline(y=0, color='grey', linestyle='-')
     plt.yscale('symlog')
     plt.show()
     minIndex = df['minDistance'].idxmin()
