@@ -104,6 +104,12 @@ public class SpaceSimulator
 		Particle ship = particles.get(4);
 		return ship.getEdgeDistance(venus);
 	}
+
+	public double getVenusToSunDistance() {
+		Particle venus = particles.get(3);
+		Particle sun = particles.get(0);
+		return venus.getEdgeDistance(sun);
+	}
 	
 	public double getEarthToSunDistance() {
 		Particle earth = particles.get(1);

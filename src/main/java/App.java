@@ -88,6 +88,7 @@ public class App {
 	{
 		boolean launched = false;
 		boolean crashed = false;
+		boolean died = false;
 		double t, minDistance, minTime;
 		double minGlobalDistance = Double.MAX_VALUE;
 		double bestLaunchTime = 0;
@@ -107,9 +108,10 @@ public class App {
 			minTime = Integer.MAX_VALUE;
 			launched = false;
 			crashed = false;
+			died = false;
 			simulator = new SpaceSimulator(particles, input.getDeltaT());
 			
-			while(!crashed && t <= departureTime + SECONDS_IN_YEAR/2)
+			while(!crashed && !died && t <= departureTime + SECONDS_IN_YEAR/2)
 			{
 				if(t >= departureTime && !launched)
 				{
@@ -122,6 +124,8 @@ public class App {
 				{
 					if(toVenus)
 					{
+						if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getVenusToSunDistance()/2))
+							died = true;
 						if (minDistance > Math.max(0, simulator.getShipToVenusDistance()))
 						{
 							minDistance = Math.max(0, simulator.getShipToVenusDistance());
@@ -161,6 +165,7 @@ public class App {
 		t = 0.0;
 		launched = false;
 		crashed = false;
+		died = false;
 		double launchInterval = 60*MINUTES_MARGIN;
 		double launchDay = bestLaunchTime;
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
@@ -173,9 +178,10 @@ public class App {
 			minTime = Integer.MAX_VALUE;
 			launched = false;
 			crashed = false;
+			died = false;
 			simulator = new SpaceSimulator(particles, input.getDeltaT());
 			
-			while(!crashed && t <= departureTime + SECONDS_IN_YEAR/2)
+			while(!crashed && !died && t <= departureTime + SECONDS_IN_YEAR/2)
 			{
 				if(t >= departureTime && !launched)
 				{
@@ -187,6 +193,8 @@ public class App {
 				{
 					if(toVenus)
 					{
+						if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getVenusToSunDistance()/2))
+							died = true;
 						if (minDistance > Math.max(0, simulator.getShipToVenusDistance()))
 						{
 							minDistance = Math.max(0, simulator.getShipToVenusDistance());
