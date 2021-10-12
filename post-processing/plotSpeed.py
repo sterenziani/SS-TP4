@@ -3,11 +3,30 @@ from matplotlib.ticker import FormatStrFormatter
 import pandas as pd
 import os
 import numpy as np
+import math
+
+
+def round_decimals_up(number: float, decimals: int = 2):
+    """
+    Returns a value rounded up to a specific number of decimal places.
+    """
+    if not isinstance(decimals, int):
+        raise TypeError("decimal places must be an integer")
+    elif decimals < 0:
+        raise ValueError("decimal places has to be 0 or more")
+    elif decimals == 0:
+        return math.ceil(number)
+
+    factor = 10 ** decimals
+    return math.ceil(number * factor) / factor
+
 
 dfV = pd.read_csv('./../output/marsLanding.txt', sep='\t')
 
 minV = 100000
 maxV = 0
+speed = []
+time = []
 for index, row in dfV.iterrows():
     if row['d'] <= 1500 and minV > row['v']:
         minV = row['v']
@@ -15,17 +34,22 @@ for index, row in dfV.iterrows():
     if row['d'] <= 1500 and maxV < row['v']:
         maxV = row['v']
         maxTime = row['t']/(24*3600)
-print(minTime, ' ', maxTime)
+    if row['d'] == 0.0:
+        time.append(row['t']/(24*3600))
+        speed.append(row['v'])
+    if row['v'] == 8.0:
+        meanTime = row['t']/(24*3600)
+print(minTime, ' ', meanTime, ' ', maxTime)
 
 fig1, ax1 = plt.subplots()
 t = dfV['t']/(24*3600)
-ax1.plot(dfV['v'], t, color='r')
-ax1.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-ax1.xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
-plt.xticks(np.arange(min(dfV['v']), max(dfV['v'] + 0.001), 0.001))
+ax1.plot(speed, time, color='r')
+ax1.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+ax1.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+plt.xticks([np.min(speed), 8.0, np.max(speed)])
 print(minV, ' ', maxV)
-print(np.arange(minTime, maxTime, 0.01))
-plt.yticks(np.arange(minTime, maxTime, 0.01))
+plt.yticks([np.min(time),
+           (np.max(time)-np.min(time))/2 + np.min(time), np.max(time)])
 plt.xlabel("$\mathregular{V_0}$ (km/s)")
 plt.ylabel("Tiempo de viaje (días)")
 
@@ -38,6 +62,6 @@ ax2.plot(dfV['v'], dfV['d'], color='r')
 ax2.xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 plt.xlabel("$\mathregular{V_0}$ (km/s)")
 plt.ylabel("Distancia mínima a Marte (km)")
-plt.xticks(np.arange(min(dfV['v']), max(dfV['v'] + 0.001), 0.001))
+plt.xticks(np.arange(min(dfV['v']), max(dfV['v'] + .001), .001))
 plt.savefig('./plots/distance.png', bbox_inches='tight')
 plt.show()
