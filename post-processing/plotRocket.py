@@ -25,8 +25,8 @@ def main():
 
     # Usando el vuelo que más se acerque de esos, graficar velocidad
     df = pd.read_csv(directory+"spaceship-velocity.txt", sep=';')
-    plt.plot(df['t']-min(df['t']), df['v'])
-    plt.xlabel('Tiempo desde despegue (s)')
+    plt.plot((df['t']-min(df['t']))/3600, df['v'], color='orange')
+    plt.xlabel('Tiempo desde despegue (hrs)')
     plt.ylabel('Velocidad de la nave (km/s)')
     plt.show()
 

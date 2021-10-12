@@ -318,7 +318,7 @@ public class App {
 				
 				if (launched)
 				{
-					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/3))
+					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/2))
 						died = true;
 					if (minDistance > Math.max(0, simulator.getShipToEarthDistance()))
 					{
@@ -374,7 +374,7 @@ public class App {
 				simulator.updateParticles();
 				if (launched)
 				{
-					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/3))
+					if(Math.abs(simulator.getShipToSunDistance()) < Math.abs(simulator.getEarthToSunDistance()/2))
 						died = true;
 					if (minDistance > Math.max(0, simulator.getShipToEarthDistance()))
 					{

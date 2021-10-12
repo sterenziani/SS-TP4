@@ -122,6 +122,46 @@ public class SpaceSimulator
 		return ship.getV();
 	}
 	
+	public double getShipVx() {
+		Particle ship = particles.get(4);
+		return ship.getVx();
+	}
+	
+	public double getShipVy() {
+		Particle ship = particles.get(4);
+		return ship.getVy();
+	}
+	
+	public double getEarthVx() {
+		Particle earth = particles.get(1);
+		return earth.getVx();
+	}
+	
+	public double getEarthVy() {
+		Particle earth = particles.get(1);
+		return earth.getVy();
+	}
+	
+	public double getMarsVx() {
+		Particle mars = particles.get(2);
+		return mars.getVx();
+	}
+	
+	public double getMarsVy() {
+		Particle mars = particles.get(2);
+		return mars.getVy();
+	}
+	
+	public double getVenusVx() {
+		Particle venus = particles.get(3);
+		return venus.getVx();
+	}
+	
+	public double getVenusVy() {
+		Particle venus = particles.get(3);
+		return venus.getVy();
+	}
+	
 	public List<Particle> getParticles() {
 		return particles;
 	}
