@@ -89,4 +89,8 @@ public class Particle {
     {
     	return "x: " +x +"\ty:" +y +"\tvx: " +vx +"\tvy: " +vy +"\tr: " +radius +"\tm:" +mass;
     }
+
+	public double getKineticEnergy() {
+        return 0.5 * mass * Math.pow(getV(), 2); 
+	}
 }

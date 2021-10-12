@@ -204,5 +204,28 @@ public class Output {
 	        e.printStackTrace();
 	    }
 	}
+	
+	public static void outputRocketError(Map<Double, Double> map)
+	{
+		String outputFileName = OUTPUT_DIR +"/spaceship-error.txt";
+    	File file = createFile(outputFileName, "dt;error");
+    	List<Entry<Double, Double>> entries = new ArrayList<Map.Entry<Double, Double>>(map.entrySet());
+    	Collections.sort(entries, new Comparator<Map.Entry<Double, Double>>()
+		    	{
+    		        public int compare(Entry<Double, Double> a, Entry<Double, Double> b)
+    		        {	return Double.compare(a.getKey(), b.getKey());	}
+		    	});
+    	
+        try (FileWriter writer = new FileWriter(file, true))
+        {
+        	for(Entry<Double, Double> e : entries)
+    			writer.write(e.getKey() +";" +e.getValue() +"\n");
+        	writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }	
+	}
     
 }

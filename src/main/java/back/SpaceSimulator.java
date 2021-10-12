@@ -6,6 +6,7 @@ public class SpaceSimulator
 	private List<Particle> particles;
 	private double deltaT;
 	private SpaceGearAlgorithm gearSystem;
+	private static final double G = 6.674*Math.pow(10, -20);
 	
 	public SpaceSimulator(List<Particle> particles, double deltaT)
 	{
@@ -164,5 +165,21 @@ public class SpaceSimulator
 	
 	public List<Particle> getParticles() {
 		return particles;
+	}
+	
+	public double getSystemEnergy()
+	{
+		double kineticEnergy = 0.0;
+		double potentialEnergy = 0.0;
+		for(Particle p1 : particles)
+		{
+			kineticEnergy += p1.getKineticEnergy();
+			for(Particle p2 : particles)
+			{
+				if(p1.getId() != p2.getId())
+					potentialEnergy += G * p1.getMass()*p2.getMass() / (Math.abs(p1.getCenterDistance(p2)));
+			}
+		}
+		return kineticEnergy - 0.5*potentialEnergy;		
 	}
 }

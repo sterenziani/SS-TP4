@@ -33,6 +33,8 @@ public class App {
 			Exercise2(input, true);
 		else if(input.getExercise() == 5)
 			compareVelocities(input);
+		else if(input.getExercise() == 6)
+			calculateErrors();
 		else
 			System.out.println("There is no exercise #" +input.getExercise());
 	}
@@ -498,6 +500,30 @@ public class App {
 		System.out.println("Mission complete! Best day was " +bestLaunchTime/SECONDS_IN_DAY +"\n\n");
 		Output.outputShipReports(reports, false, "spaceships-V"+input.getShipVelocity()+".txt");
 	}
+
+	private static void calculateErrors()
+	{
+		List<Particle> particles;
+		Map<Double, Double> map = new HashMap<>();
+		for(double dt=0.1; dt <= 10000; dt*=10)
+		{
+			System.out.println("Starting dt = " +dt);
+			particles = createPlanets();
+			double t = 0.0;
+			SpaceSimulator simulator = new SpaceSimulator(particles, dt);
+			double initialEnergy = simulator.getSystemEnergy();
+			double error = 0.0;
+			while(t <= 30*SECONDS_IN_DAY)
+			{
+				simulator.updateParticles();
+				t += dt;
+			}
+			error = Math.abs((simulator.getSystemEnergy() - initialEnergy)/initialEnergy);
+			System.out.println(dt + "\t" + error);
+			map.put(dt, error);
+		}
+		Output.outputRocketError(map);
+	}
 	
 	private static List<Particle> createPlanets()
 	{
@@ -505,7 +531,8 @@ public class App {
 		Particle earth = new Particle(2, 1.500619962348151E+08, 2.288499248197072E+06, -9.322979134387409E-01, 2.966365033636722E+01, 5.97219*Math.pow(10, 24), 6371.01);
 		Particle mars = new Particle(3, -2.426617401833969E+08, -3.578836154354768E+07, 4.435907910045917E+00, -2.190044178514185E+01, 6.4171*Math.pow(10, 23), 3389.92);
 		Particle venus = new Particle(4, 5.014551876053274E+07, -9.659685434359106E+07, 3.084680652374887E+01, 1.601542153811616E+01, 48.685*Math.pow(10, 23), 6051.84);
-			List<Particle> particles = new ArrayList<>();
+		List<Particle> particles = new ArrayList<>();
+		
 		particles.add(sun);
 		particles.add(earth);
 		particles.add(mars);
