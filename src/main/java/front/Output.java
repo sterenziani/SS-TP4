@@ -94,6 +94,11 @@ public class Output {
 		String outputFileName = OUTPUT_DIR +"/spaceships.txt";
 		if(fromMars)
 			outputFileName = OUTPUT_DIR +"/spaceships-return.txt";
+		outputShipReports(reports, fromMars, outputFileName);
+	}
+	
+	public static void outputShipReports(List<SpaceReport> reports, boolean fromMars, String outputFileName)
+	{
     	File file = createSpaceshipFile(outputFileName);
         try (FileWriter writer = new FileWriter(file, true))
         {
