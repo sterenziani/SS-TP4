@@ -396,13 +396,13 @@ public class App {
 	private static void exercise4(Input input) {
 		boolean launched = false;
 		boolean crashed = false;
-		double t, minDistance, minTime;
-		double minGlobalDistance = Double.MAX_VALUE;
+		double t;
+		double minDistance = Double.POSITIVE_INFINITY;
+		double minT = Double.NEGATIVE_INFINITY;
 		double bestLaunchTime = 3.02955E7;
 		// Units are in KM to simplify distance math
 		List<Particle> particles = createPlanets();
 		SpaceSimulator simulator;
-		List<SpaceReport> reports = new ArrayList<>();
 
 		// Analyze velocity
 		particles = createPlanets();
@@ -412,6 +412,15 @@ public class App {
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
 		t = 0.0;
 		while (!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR / 2) {
+			if (launched && simulator.getShipToMarsDistance() < minDistance) {
+				if (simulator.getShipToMarsDistance() > 0.0)
+					minDistance = simulator.getShipToMarsDistance();
+				else {
+					minDistance = 0.0;
+					crashed = true;
+				}
+				minT = t - bestLaunchTime;
+			}
 			if (t >= bestLaunchTime && !launched) {
 				simulator.launchSpaceship(input.getShipVelocity(), false);
 				launched = true;
@@ -419,12 +428,9 @@ public class App {
 			simulator.updateParticles();
 			if (launched)
 				velocityMap.put(t, simulator.getShipVelocity());
-			if (launched && simulator.getShipToMarsDistance() <= 1500) {
-				crashed = true;
-				System.out.println(input.getShipVelocity() + "\t" + t);
-			}
 			t += input.getDeltaT();
 		}
+		System.out.println(input.getShipVelocity() + "\t" + minT + "\t" + minDistance);
 	}
 
 	private static List<Particle> createPlanets() {
