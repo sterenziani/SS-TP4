@@ -4,10 +4,11 @@ import pandas as pd
 def main():
     directory = "../output/"
     df = pd.read_csv(directory+"spaceships.txt", sep=';')
-    plt.plot(df['departureTime']/(3600*24), df['minDistance'])
+    plt.plot(df['departureTime']/(3600*24), df['minDistance'], color='orange')
     plt.xlabel('Día de Despegue')
-    plt.ylabel('Distancia mínima a Marte (km)')
+    plt.ylabel('Distancia mínima a Venus (km)')
     plt.yscale('log')
+    plt.ylim( (10**0, 10**10) )
     plt.show()
     minIndex = df['minDistance'].idxmin()
     bestDay = df['departureTime'][minIndex]
@@ -15,9 +16,9 @@ def main():
 
     # Desde el día anterior al mínimo, a qué hora nos conviene lanzarlo?
     df = pd.read_csv(directory+"spaceships-precise.txt", sep=';')
-    plt.plot((df['departureTime'] - minTimeStart)/3600, df['minDistance'], '.')
+    plt.plot((df['departureTime'] - minTimeStart)/3600, df['minDistance'], '.', color='orange')
     plt.xlabel('Hora de despegue (hrs)')
-    plt.ylabel('Distancia mínima a Marte (km)')
+    plt.ylabel('Distancia mínima a Venus (km)')
     plt.yscale('symlog')
     plt.show()
     minIndex = df['minDistance'].idxmin()
@@ -25,8 +26,8 @@ def main():
 
     # Usando el vuelo que más se acerque de esos, graficar velocidad
     df = pd.read_csv(directory+"spaceship-velocity.txt", sep=';')
-    plt.plot(df['t']-min(df['t']), df['v'])
-    plt.xlabel('Tiempo desde despegue (s)')
+    plt.plot((df['t']-min(df['t']))/3600, df['v'], color='orange')
+    plt.xlabel('Tiempo desde despegue (hrs)')
     plt.ylabel('Velocidad de la nave (km/s)')
     plt.show()
 

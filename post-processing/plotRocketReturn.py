@@ -8,6 +8,7 @@ def main():
     plt.xlabel('Día de Despegue')
     plt.ylabel('Distancia mínima a la Tierra (km)')
     plt.yscale('log')
+    plt.ylim( (10**0, 10**10) )
     plt.show()
     minIndex = df['minDistance'].idxmin()
     bestDay = df['departureTime'][minIndex]
@@ -18,7 +19,6 @@ def main():
     plt.plot((df['departureTime'] - minTimeStart)/3600, df['minDistance'], '.')
     plt.xlabel('Hora de despegue (hrs)')
     plt.ylabel('Distancia mínima a la Tierra (km)')
-    plt.axhline(y=0, color='grey', linestyle='-')
     plt.yscale('symlog')
     plt.show()
     minIndex = df['minDistance'].idxmin()
@@ -26,8 +26,8 @@ def main():
 
     # Usando el vuelo que más se acerque de esos, graficar velocidad
     df = pd.read_csv(directory+"spaceship-return-velocity.txt", sep=';')
-    plt.plot(df['t']-min(df['t']), df['v'])
-    plt.xlabel('Tiempo desde despegue (s)')
+    plt.plot((df['t']-min(df['t']))/3600, df['v'])
+    plt.xlabel('Tiempo desde despegue (hrs)')
     plt.ylabel('Velocidad de la nave (km/s)')
     plt.show()
 
