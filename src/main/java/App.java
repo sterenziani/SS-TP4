@@ -255,6 +255,8 @@ public class App {
 				{
 					crashed = true;
 					System.out.println("Crashed with speed of " +simulator.getShipVelocity());
+					System.out.println("Ship was going at V=(" +simulator.getShipVx() +", " +simulator.getShipVy() +")");
+					System.out.println("Venus was going at V=(" +simulator.getVenusVx() +", " +simulator.getVenusVy() +")");
 				}
 			}
 			else
@@ -263,6 +265,8 @@ public class App {
 				{
 					crashed = true;
 					System.out.println("Crashed with speed of " +simulator.getShipVelocity());
+					System.out.println("Ship was going at V=(" +simulator.getShipVx() +", " +simulator.getShipVy() +")");
+					System.out.println("Mars was going at V=(" +simulator.getMarsVx() +", " +simulator.getMarsVy() +")");
 				}
 			}
 			t += input.getDeltaT();
@@ -423,6 +427,8 @@ public class App {
 			{
 				crashed = true;
 				System.out.println("Crashed with speed of " +simulator.getShipVelocity());
+				System.out.println("Ship was going at V=(" +simulator.getShipVx() +", " +simulator.getShipVy() +")");
+				System.out.println("Earth was going at V=(" +simulator.getEarthVx() +", " +simulator.getEarthVy() +")");
 			}
 			t += input.getDeltaT();
 			frame++;
