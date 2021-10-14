@@ -30,28 +30,27 @@ time = []
 for index, row in dfV.iterrows():
     if row['d'] <= 1500 and minV > row['v']:
         minV = row['v']
-        minTime = row['t']/(24*3600)
     if row['d'] <= 1500 and maxV < row['v']:
         maxV = row['v']
-        maxTime = row['t']/(24*3600)
     if row['d'] == 0.0:
         time.append(row['t']/(24*3600))
         speed.append(row['v'])
     if row['v'] == 8.0:
         meanTime = row['t']/(24*3600)
-print(minTime, ' ', meanTime, ' ', maxTime)
+print(min(time), ' ', meanTime, ' ', max(time))
 
 fig1, ax1 = plt.subplots()
 t = dfV['t']/(24*3600)
-ax1.plot(speed, time, color='r')
+ax1.scatter(speed, time, color='r')
 ax1.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 ax1.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
 plt.xticks([np.min(speed), 8.0, np.max(speed)])
 print(minV, ' ', maxV)
-plt.yticks([np.min(time),
-           (np.max(time)-np.min(time))/2 + np.min(time), np.max(time)])
-plt.xlabel("$\mathregular{V_0}$ (km/s)")
-plt.ylabel("Tiempo de viaje (días)")
+print(np.max(time))
+plt.yticks(np.arange(np.min(time), np.max(time) + 0.001, step=(np.max(
+    time)-np.min(time))/6))
+plt.xlabel("$\mathregular{V_0}$ (km/s)", fontsize=11)
+plt.ylabel("Tiempo de viaje (días)", fontsize=11)
 
 if not os.path.exists('plots'):
     os.mkdir('plots')
@@ -62,6 +61,6 @@ ax2.plot(dfV['v'], dfV['d'], color='r')
 ax2.xaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 plt.xlabel("$\mathregular{V_0}$ (km/s)")
 plt.ylabel("Distancia mínima a Marte (km)")
-plt.xticks(np.arange(min(dfV['v']), max(dfV['v'] + .001), .001))
+plt.xticks(np.arange(min(dfV['v']), max(dfV['v']), .001))
 plt.savefig('./plots/distance.png', bbox_inches='tight')
 plt.show()
