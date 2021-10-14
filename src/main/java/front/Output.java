@@ -141,6 +141,11 @@ public class Output {
 		String outputFileName = OUTPUT_DIR +"/spaceship-velocity.txt";
 		if(fromMars)
 			outputFileName = OUTPUT_DIR +"/spaceship-return-velocity.txt";
+		outputShipVelocity(map, fromMars, outputFileName);
+	}
+	
+	public static void outputShipVelocity(Map<Double, Double> map, boolean fromMars, String outputFileName)
+	{
 		File file = createFile(outputFileName, "t;v");
 		List<Entry<Double, Double>> entries = new ArrayList<Map.Entry<Double, Double>>(map.entrySet());
 		Collections.sort(entries, new Comparator<Map.Entry<Double, Double>>()
