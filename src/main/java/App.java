@@ -608,28 +608,22 @@ public class App {
 		double minT = Double.MAX_VALUE;
 		List<Particle> particles = createPlanets();
 		SpaceSimulator simulator;
-		Map<Double, Double> velocityMap = new HashMap<>();
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
-		while(!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR/2)
-		{			
-			if(t >= bestLaunchTime && !launched)
-			{
+		Output.resetFolder(Output.OUTPUT_DIR + "/animation");
+		while (!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR / 2)
+		{
+			if (t >= bestLaunchTime && !launched) {
 				simulator.launchSpaceship(input.getShipVelocity(), false);
 				launched = true;
 			}
 			simulator.updateParticles();
-			if(launched)
-			{
-				velocityMap.put(t, simulator.getShipVelocity());
-				if(simulator.getShipToMarsDistance() <= 0)
-				{
+			if (launched) {
+				if (simulator.getShipToMarsDistance() <= 0) {
 					minDistance = 0;
-					minT = t - bestLaunchTime;
 					crashed = true;
-				}
-				if(minDistance < Math.max(0, simulator.getShipToMarsDistance()))
-				{
-					minDistance = Math.max(0, simulator.getShipToMarsDistance());
+					minT = t - bestLaunchTime;
+				} else if (simulator.getShipToMarsDistance() <= minDistance) {
+					minDistance = simulator.getShipToMarsDistance();
 					minT = t - bestLaunchTime;
 				}
 			}
