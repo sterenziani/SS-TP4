@@ -22,6 +22,13 @@ public class App {
 	private static final int DAYS_IN_2_YEARS = 730;
 	private static final int MINUTES_MARGIN = 5;
 	
+	private static double getV(double sx, double sy, double px, double py)
+	{
+		double dx = sx - px;
+		double dy = sy - py;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+	
 	public static void main(String[] args) throws IOException
 	{
 		Input input = Parser.ParseInputFile("input.txt");
