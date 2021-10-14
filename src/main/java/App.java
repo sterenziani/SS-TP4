@@ -610,7 +610,6 @@ public class App {
 		SpaceSimulator simulator;
 		Map<Double, Double> velocityMap = new HashMap<>();
 		simulator = new SpaceSimulator(particles, input.getDeltaT());
-		Output.resetFolder(Output.OUTPUT_DIR+"/animation");
 		while(!crashed && t <= bestLaunchTime + SECONDS_IN_YEAR/2)
 		{			
 			if(t >= bestLaunchTime && !launched)
