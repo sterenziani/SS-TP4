@@ -3,7 +3,7 @@ import java.util.List;
 
 public class SpaceGearAlgorithm
 {
-	private static final double G = 6.674*Math.pow(10, -20); // for km³, it's 10^-20 instead of 10^-11
+	private static final double G = 6.693*Math.pow(10, -20); // for km³, it's 10^-20 instead of 10^-11
 	private static final int X = 0;
 	private static final int Y = 1;
 	

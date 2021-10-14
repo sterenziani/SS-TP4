@@ -6,7 +6,7 @@ public class SpaceSimulator
 	private List<Particle> particles;
 	private double deltaT;
 	private SpaceGearAlgorithm gearSystem;
-	private static final double G = 6.674*Math.pow(10, -20);
+	private static final double G = 6.693*Math.pow(10, -20);
 	
 	public SpaceSimulator(List<Particle> particles, double deltaT)
 	{

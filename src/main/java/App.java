@@ -500,7 +500,7 @@ public class App {
 			System.out.println(report.getDepartureTime() +"\t" + report.getShipVelocity() +"\t" +report.getMinDistance() +"\t" +report.getTime());
 		}
 		System.out.println("Mission complete! Best day was " +bestLaunchTime/SECONDS_IN_DAY +"\n\n");
-		Output.outputShipReports(reports, false, "spaceships-V"+input.getShipVelocity()+".txt");
+		Output.outputShipReports(reports, false, "output/spaceships-V"+input.getShipVelocity()+".txt");
 	}
 
 	private static void marsLaunchAtPerfectTime(Input input)

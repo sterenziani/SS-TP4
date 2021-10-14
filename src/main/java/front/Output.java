@@ -117,6 +117,12 @@ public class Output {
 		String outputFileName = OUTPUT_DIR +"/spaceships-precise.txt";
 		if(fromMars)
 			outputFileName = OUTPUT_DIR +"/spaceships-return-precise.txt";
+		outputShipPreciseReports(reports, fromMars, outputFileName);
+	}
+	
+	public static void outputShipPreciseReports(List<SpaceReport> reports, boolean fromMars, String outputFileName)
+	{
+
     	File file = createSpaceshipFile(outputFileName);
         try (FileWriter writer = new FileWriter(file, true))
         {
